@@ -1369,3 +1369,14 @@ main { display: block; }
 .plan-name { font-size: 1.5rem; }
 .section-title,
 .page-hero h1 { color: var(--primary); }
+
+/* Fundo do início sem foto: brilho dourado e linhas finas diagonais.
+   Para usar uma foto, volte a colocar <div class="hero-media"><img ...></div> dentro do .hero */
+.hero {
+  background:
+    radial-gradient(ellipse 60% 60% at 78% 42%, rgba(201, 164, 92, .16), transparent 70%),
+    radial-gradient(ellipse 45% 40% at 10% 90%, rgba(230, 220, 198, .05), transparent 70%),
+    repeating-linear-gradient(135deg, rgba(230, 220, 198, .025) 0 1px, transparent 1px 14px),
+    var(--bg);
+}
+.hero::before { background: linear-gradient(180deg, transparent 65%, var(--bg) 100%); }
