@@ -1,5 +1,5 @@
 /* =========================================================
-   STYLLO BARBEARIA — barbeiros.js
+   FINO TRATO BARBEARIA — barbeiros.js
    Página Equipe: mostra os barbeiros ativos cadastrados no painel
    (nome, especialidade, Instagram e foto).
    ========================================================= */
@@ -46,7 +46,7 @@
   }
 
   if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.fetch) {
-    aviso('Conheça a equipe no nosso <a href="https://www.instagram.com/styllobarbearia_" target="_blank" rel="noopener">Instagram</a>.');
+    aviso('Conheça a equipe no nosso <a href="https://www.instagram.com/finotratobarbearia_" target="_blank" rel="noopener">Instagram</a>.');
     return;
   }
 
@@ -63,7 +63,7 @@
       lista.innerHTML = barbeiros.map(cartao).join("");
     })
     .catch(function (err) {
-      console.warn("Styllo: não foi possível carregar a equipe", err);
-      aviso('Não foi possível carregar a equipe agora. Veja no nosso <a href="https://www.instagram.com/styllobarbearia_" target="_blank" rel="noopener">Instagram</a>.');
+      console.warn("Fino Trato: não foi possível carregar a equipe", err);
+      aviso('Não foi possível carregar a equipe agora. Veja no nosso <a href="https://www.instagram.com/finotratobarbearia_" target="_blank" rel="noopener">Instagram</a>.');
     });
 })();

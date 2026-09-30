@@ -1,6 +1,6 @@
-# Styllo Barbearia
+# Fino Trato Barbearia
 
-Site da Styllo Barbearia (Patos - PB) com agendamento online e painel administrativo.
+Site da Fino Trato Barbearia (Patos - PB) com agendamento online e painel administrativo.
 
 - **Site:** HTML, CSS e JavaScript puros (sem framework)
 - **Banco e login:** [Supabase](https://supabase.com) — esquema em `supabase/schema.sql`

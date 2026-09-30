@@ -1,5 +1,5 @@
 /* =========================================================
-   STYLLO BARBEARIA — config.js
+   FINO TRATO BARBEARIA — config.js
    Conexão com o banco de dados (Supabase), usada pelo agendamento e pelo painel admin.
 
    SUBSTITUIR: no Supabase, abra Project Settings > API e copie:

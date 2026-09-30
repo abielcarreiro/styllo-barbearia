@@ -5,7 +5,7 @@ Leva uns 15 minutos. Tudo pelo navegador.
 ## 1. Criar o projeto
 1. Crie uma conta em https://supabase.com (pode entrar com o GitHub ou o Google).
 2. Clique em **New project**.
-   - **Name:** styllo-barbearia
+   - **Name:** fino-trato-barbearia
    - **Database Password:** crie uma senha forte e guarde num lugar seguro.
    - **Region:** South America (São Paulo)
 3. Espere o projeto terminar de ser criado (1 a 2 minutos).

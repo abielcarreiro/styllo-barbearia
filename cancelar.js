@@ -1,5 +1,5 @@
 /* =========================================================
-   STYLLO BARBEARIA — cancelar.js
+   FINO TRATO BARBEARIA — cancelar.js
    Página "Meu agendamento": consulta e cancela pelo link com token.
    ========================================================= */
 (function () {
@@ -53,7 +53,7 @@
     }
     render(res.data);
   }).catch(function (err) {
-    console.error("Styllo: erro ao consultar agendamento", err);
+    console.error("Fino Trato: erro ao consultar agendamento", err);
     showError("Não foi possível carregar seu agendamento agora. Tente novamente em instantes.");
   });
 

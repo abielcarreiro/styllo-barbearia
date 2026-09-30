@@ -141,7 +141,7 @@
 
   function linkWhatsApp(a) {
     const tel = String(a.clientes.telefone || "").replace(/\D/g, "");
-    const msg = "Olá, " + a.clientes.nome.split(" ")[0] + "! Passando para lembrar do seu horário na Styllo Barbearia: " +
+    const msg = "Olá, " + a.clientes.nome.split(" ")[0] + "! Passando para lembrar do seu horário na Fino Trato Barbearia: " +
       a.servicos.nome + ", " + A.dataCurta(estado.dia) + " às " + A.hora(a.inicio) + ". Até lá!";
     return "https://wa.me/55" + tel + "?text=" + encodeURIComponent(msg);
   }

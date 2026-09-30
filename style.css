@@ -1,23 +1,25 @@
 /* =========================================================
-   STYLLO BARBEARIA — style.css
+   FINO TRATO BARBEARIA — style.css
    Mobile-first. Breakpoints: 768px (tablet), 1024px (desktop nav), 1280px (wide)
    ========================================================= */
 
 /* ---------- Tokens ---------- */
 :root {
+  /* Fino Trato: preto do logo, latão envelhecido e marfim */
   --bg: #0B0B0B;
-  --bg-alt: #151515;
-  --surface: #151515;
-  --line: #2A2A2A;
-  --line-strong: #3A3A3A;
-  --primary: #4FB3AE;
-  --primary-hover: #6CC7C2;
+  --bg-alt: #151310;
+  --surface: #151310;
+  --line: #2B2722;
+  --line-strong: #3E3831;
+  --primary: #C9A45C;
+  --primary-hover: #DBBA78;
   --on-primary: #0B0B0B;
-  --gold: #D4A93C;
-  --text: #F5F5F5;
-  --muted: #A0A0A0;
+  --gold: #E6DCC6;
+  --text: #F3EEE4;
+  --muted: #A8A094;
 
   --font-display: "Oswald", "Arial Narrow", Arial, sans-serif;
+  --font-title: "Rye", Georgia, "Times New Roman", serif;
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 
   --header-h: 68px;
@@ -105,10 +107,10 @@ button { font: inherit; color: inherit; }
 .ph {
   display: inline;
   padding: 0 .3em;
-  background: rgba(212, 169, 60, .12);
-  border: 1px dashed rgba(212, 169, 60, .6);
+  background: rgba(201, 164, 92, .12);
+  border: 1px dashed rgba(201, 164, 92, .6);
   border-radius: 2px;
-  color: var(--gold);
+  color: var(--primary);
   font-family: var(--font-body);
   font-size: .9em;
   font-weight: 500;
@@ -416,7 +418,7 @@ main { display: block; }
   border-bottom: 1px solid var(--line);
   text-align: center;
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(79,179,174,.07), transparent 60%),
+    radial-gradient(ellipse at 50% 0%, rgba(201,164,92,.07), transparent 60%),
     var(--bg);
 }
 .page-hero h1 {
@@ -957,7 +959,7 @@ main { display: block; }
   text-align: center;
   border-top: 1px solid var(--line);
   background:
-    radial-gradient(ellipse at 50% 100%, rgba(79,179,174,.08), transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(201,164,92,.08), transparent 60%),
     var(--bg);
 }
 .cta h2 { font-size: clamp(2.25rem, 8vw, 4rem); margin-bottom: 16px; }
@@ -1091,7 +1093,7 @@ main { display: block; }
   width: 100%;
   min-height: 48px;
   padding: 12px 40px 12px 14px;
-  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234FB3AE' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center;
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23C9A45C' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   color: var(--text);
@@ -1163,7 +1165,7 @@ main { display: block; }
   width: 1px;
   height: 1px;
 }
-.choice:has(input:checked) { border-color: var(--primary); background: rgba(79, 179, 174, .08); box-shadow: 0 0 0 1px var(--primary) inset; }
+.choice:has(input:checked) { border-color: var(--primary); background: rgba(201, 164, 92, .08); box-shadow: 0 0 0 1px var(--primary) inset; }
 .choice:has(input:focus-visible),
 .day:has(input:focus-visible),
 .slot:has(input:focus-visible) { outline: 2px solid var(--primary); outline-offset: 2px; }
@@ -1252,9 +1254,9 @@ main { display: block; }
 .booking-alert {
   margin: 0;
   padding: 16px;
-  border: 1px solid rgba(212, 169, 60, .5);
+  border: 1px solid rgba(201, 164, 92, .5);
   border-radius: var(--radius);
-  background: rgba(212, 169, 60, .08);
+  background: rgba(201, 164, 92, .08);
   color: var(--text);
 }
 
@@ -1346,3 +1348,24 @@ main { display: block; }
 .team-photo--vazia { display: grid; place-items: center; background: linear-gradient(180deg, #1A1A1A, #111); }
 .team-inicial { font-family: var(--font-display); font-size: 6rem; color: var(--line-strong); }
 .team-ig-vazio { display: block; height: 8px; }
+
+
+/* ---------- Títulos Fino Trato (fonte vintage) ---------- */
+.hero-title,
+.page-hero h1,
+.section-title,
+.cta h2,
+.service-group-title,
+.plan-name {
+  font-family: var(--font-title);
+  font-weight: 400;
+  letter-spacing: .02em;
+}
+.hero-title { font-size: clamp(2.2rem, 9vw, 4.75rem); line-height: 1.05; }
+.page-hero h1 { font-size: clamp(2.2rem, 8vw, 3.75rem); }
+.section-title { font-size: clamp(1.7rem, 5.5vw, 2.75rem); }
+.cta h2 { font-size: clamp(1.9rem, 6.5vw, 3.25rem); }
+.service-group-title { font-size: clamp(1.3rem, 4.5vw, 1.7rem); }
+.plan-name { font-size: 1.5rem; }
+.section-title,
+.page-hero h1 { color: var(--primary); }

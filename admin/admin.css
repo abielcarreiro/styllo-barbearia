@@ -1,5 +1,5 @@
 /* =========================================================
-   STYLLO BARBEARIA — painel admin
+   FINO TRATO BARBEARIA — painel admin
    Usa as cores e componentes de ../style.css
    ========================================================= */
 
@@ -265,10 +265,10 @@ code { font-size: .9em; color: var(--gold); }
   vertical-align: middle;
 }
 .st-agendado   { background: rgba(160, 160, 160, .15); color: #D0D0D0; }
-.st-confirmado { background: rgba(79, 179, 174, .15); color: var(--primary); }
+.st-confirmado { background: rgba(201, 164, 92, .15); color: var(--primary); }
 .st-concluido  { background: var(--primary); color: var(--on-primary); }
 .st-cancelado  { background: rgba(240, 154, 140, .12); color: #F09A8C; }
-.st-faltou     { background: rgba(212, 169, 60, .14); color: var(--gold); }
+.st-faltou     { background: rgba(224, 146, 84, .14); color: #E6A06E; }
 
 /* ---------- Tabelas ---------- */
 .grupo-titulo {
@@ -462,3 +462,6 @@ code { font-size: .9em; color: var(--gold); }
   font-family: var(--font-display);
   color: var(--muted);
 }
+
+/* Títulos do login na fonte vintage */
+.auth-card h1 { font-family: var(--font-title); font-weight: 400; letter-spacing: .02em; }

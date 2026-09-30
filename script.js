@@ -1,5 +1,5 @@
 /* =========================================================
-   STYLLO BARBEARIA — script.js
+   FINO TRATO BARBEARIA — script.js
    JavaScript puro, sem dependências.
    ========================================================= */
 
