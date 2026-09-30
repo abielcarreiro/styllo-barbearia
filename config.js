@@ -13,7 +13,13 @@
 window.STYLLO = {
   supabaseUrl: "https://whnhockwlwzupnnijmye.supabase.co",
   supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndobmhvY2t3bHd6dXBubmlqbXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Mjg1OTQsImV4cCI6MjEwNjMwNDU5NH0.pSndzKJSp4n8InI5pBIQPzUQ9mNjhme16Q7Nhar1lE8",
-  fuso: "America/Fortaleza"
+  fuso: "America/Fortaleza",
+
+  // Usados na mensagem de confirmação enviada ao cliente pelo WhatsApp
+  barbearia: {
+    nome: "Fino Trato Barbearia",
+    endereco: "Rua Leôncio Wanderley, 444 - Centro, Patos - PB"
+  }
 };
 
 window.STYLLO.db =

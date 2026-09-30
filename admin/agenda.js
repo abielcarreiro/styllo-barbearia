@@ -70,6 +70,7 @@
       else if (acao === "hoje") { estado.dia = A.hojeISO(); carregar(); }
       else if (acao === "concluir") concluir(id);
       else if (acao === "desfazer") desfazer(id);
+      else if (acao === "reenviar") enviarConfirmacao(buscar(id), abrirJanela());
       else mudarStatus(id, acao);
     });
 
@@ -102,7 +103,7 @@
     if (!silencioso) A.$("#agenda-lista", secao).innerHTML = '<p class="muted">Carregando…</p>';
 
     let q = A.db.from("agendamentos")
-      .select("id, inicio, fim, status, preco, observacoes, barbeiro_id, clientes(nome, telefone), servicos(nome), barbeiros(nome)")
+      .select("id, inicio, fim, status, preco, observacoes, token, barbeiro_id, clientes(nome, telefone), servicos(nome, preco_a_partir), barbeiros(nome)")
       .eq("origem", "site")
       .gte("inicio", A.momento(estado.dia))
       .lt("inicio", A.momento(A.addDias(estado.dia, 1)))
@@ -139,11 +140,76 @@
       '</span><span class="stat-rotulo">' + rotulo + "</span></div>";
   }
 
-  function linkWhatsApp(a) {
+  const BARBEARIA = (window.STYLLO && window.STYLLO.barbearia) || {};
+
+  function urlWhatsApp(a, msg) {
     const tel = String(a.clientes.telefone || "").replace(/\D/g, "");
-    const msg = "Olá, " + a.clientes.nome.split(" ")[0] + "! Passando para lembrar do seu horário na Fino Trato Barbearia: " +
-      a.servicos.nome + ", " + A.dataCurta(estado.dia) + " às " + A.hora(a.inicio) + ". Até lá!";
     return "https://wa.me/55" + tel + "?text=" + encodeURIComponent(msg);
+  }
+
+  function linkWhatsApp(a) {
+    const msg = "Olá, " + a.clientes.nome.split(" ")[0] + "! Passando para lembrar do seu horário na " +
+      (BARBEARIA.nome || "barbearia") + ": " + a.servicos.nome + ", " + A.dataCurta(A.dataISO(a.inicio)) +
+      " às " + A.hora(a.inicio) + ". Até lá!";
+    return urlWhatsApp(a, msg);
+  }
+
+  // "segunda-feira, 05/10"
+  function dataMensagem(ts) {
+    const iso = A.dataISO(ts);
+    const p = iso.split("-").map(Number);
+    const semana = new Date(Date.UTC(p[0], p[1] - 1, p[2])).toLocaleDateString("pt-BR", { timeZone: "UTC", weekday: "long" });
+    return semana + ", " + iso.slice(8, 10) + "/" + iso.slice(5, 7);
+  }
+
+  // Mensagem de confirmação enviada ao cliente
+  function mensagemConfirmacao(a) {
+    const valor = Number(a.preco) > 0
+      ? (a.servicos.preco_a_partir ? "a partir de " : "") + A.dinheiro(a.preco)
+      : null;
+    const linkCancelar = new URL("../cancelar.html?t=" + encodeURIComponent(a.token), location.href).href;
+    return [
+      "✅ *Agendamento confirmado!*",
+      "",
+      "Olá, " + a.clientes.nome.split(" ")[0] + "! Seu horário na *" + (BARBEARIA.nome || "barbearia") + "* está confirmado:",
+      "",
+      "✂️ *Serviço:* " + a.servicos.nome,
+      "💈 *Barbeiro:* " + a.barbeiros.nome,
+      "📅 *Data:* " + dataMensagem(a.inicio),
+      "🕐 *Horário:* " + A.hora(a.inicio),
+      valor ? "💰 *Valor:* " + valor : null,
+      "",
+      BARBEARIA.endereco ? "📍 " + BARBEARIA.endereco : null,
+      BARBEARIA.endereco ? "" : null,
+      "Precisa cancelar? Acesse: " + linkCancelar,
+      "Te esperamos!"
+    ].filter(function (linha) { return linha !== null; }).join("\n");
+  }
+
+  // Abre o WhatsApp com a confirmação. A janela é aberta no clique (antes da
+  // resposta do servidor) para o navegador não bloquear; se bloquear, mostra um botão.
+  function enviarConfirmacao(a, janela) {
+    const url = urlWhatsApp(a, mensagemConfirmacao(a));
+    if (janela && !janela.closed) {
+      janela.location.href = url;
+      return;
+    }
+    A.dialogo({
+      titulo: "Enviar confirmação",
+      confirmar: false,
+      corpo:
+        '<p class="muted">Envie a confirmação para ' + A.esc(a.clientes.nome) + " pelo WhatsApp:</p>" +
+        '<a class="btn btn--primary btn--block" href="' + A.esc(url) + '" target="_blank" rel="noopener">Enviar no WhatsApp</a>'
+    });
+  }
+
+  function abrirJanela() {
+    const janela = window.open("", "_blank");
+    if (janela) {
+      janela.opener = null;
+      janela.document.write('<p style="font-family:sans-serif;padding:24px">Abrindo o WhatsApp…</p>');
+    }
+    return janela;
   }
 
   function formatarTelefone(t) {
@@ -158,7 +224,7 @@
       return '<button class="btn btn--sm ' + (extra || "btn--ghost") + '" type="button" data-acao="' + acao + '" data-id="' + a.id + '">' + rotulo + "</button>";
     };
     if (a.status === "agendado") return b("concluir", "Concluir", "btn--primary") + b("confirmado", "Confirmar") + b("faltou", "Faltou") + b("cancelado", "Cancelar");
-    if (a.status === "confirmado") return b("concluir", "Concluir", "btn--primary") + b("faltou", "Faltou") + b("cancelado", "Cancelar");
+    if (a.status === "confirmado") return b("concluir", "Concluir", "btn--primary") + b("reenviar", "Reenviar confirmação") + b("faltou", "Faltou") + b("cancelado", "Cancelar");
     if (a.status === "concluido") return A.ehDono() ? b("desfazer", "Desfazer conclusão") : "";
     return b("agendado", "Reativar");
   }
@@ -203,12 +269,21 @@
       faltou: "Marcar que " + a.clientes.nome + " não compareceu?"
     };
     if (perguntas[status] && !window.confirm(perguntas[status])) return;
+    const janela = status === "confirmado" ? abrirJanela() : null;
     A.ok(A.db.rpc("alterar_status_agendamento", { p_id: id, p_status: status }))
       .then(function () {
-        A.aviso("Agendamento atualizado.");
+        if (status === "confirmado") {
+          enviarConfirmacao(a, janela);
+          A.aviso("Agendamento confirmado. Envie a mensagem no WhatsApp.");
+        } else {
+          A.aviso("Agendamento atualizado.");
+        }
         carregar(true);
       })
-      .catch(function (err) { A.aviso(A.mensagemErro(err), "erro"); });
+      .catch(function (err) {
+        if (janela) janela.close();
+        A.aviso(A.mensagemErro(err), "erro");
+      });
   }
 
   function concluir(id) {
