@@ -1,0 +1,38 @@
+[
+  { "slug": "corte",                           "nome": "Corte",                                "categoria": "Cabelo",                 "preco": 35,  "a_partir": false, "duracao": 30 },
+  { "slug": "pezinho",                         "nome": "Pezinho",                              "categoria": "Cabelo",                 "preco": 10,  "a_partir": false, "duracao": 10 },
+  { "slug": "lavar-escovar",                   "nome": "Lavar e escovar",                      "categoria": "Cabelo",                 "preco": 15,  "a_partir": true,  "duracao": 10 },
+
+  { "slug": "barba",                           "nome": "Barba",                                "categoria": "Barba",                  "preco": 35,  "a_partir": false, "duracao": 30 },
+  { "slug": "barba-executiva",                 "nome": "Barba Executiva",                      "categoria": "Barba",                  "preco": 55,  "a_partir": false, "duracao": 30 },
+  { "slug": "hidratacao-barba",                "nome": "Hidratação de barba",                  "categoria": "Barba",                  "preco": 15,  "a_partir": false, "duracao": 10 },
+  { "slug": "camuflagem-barba",                "nome": "Camuflagem de barba",                  "categoria": "Barba",                  "preco": 20,  "a_partir": false, "duracao": 10 },
+  { "slug": "tintura-barba",                   "nome": "Tintura de barba",                     "categoria": "Barba",                  "preco": 20,  "a_partir": true,  "duracao": 30 },
+
+  { "slug": "corte-barba",                     "nome": "Corte + Barba",                        "categoria": "Combos",                 "preco": 70,  "a_partir": false, "duracao": 60 },
+  { "slug": "corte-sobrancelha",               "nome": "Corte + Sobrancelha",                  "categoria": "Combos",                 "preco": 50,  "a_partir": false, "duracao": 30 },
+  { "slug": "corte-barba-sobrancelha",         "nome": "Corte + Barba + Sobrancelha",          "categoria": "Combos",                 "preco": 85,  "a_partir": false, "duracao": 60 },
+  { "slug": "barba-pezinho",                   "nome": "Barba + Pezinho",                      "categoria": "Combos",                 "preco": 45,  "a_partir": false, "duracao": 30 },
+  { "slug": "barba-sobrancelha",               "nome": "Barba + Sobrancelha",                  "categoria": "Combos",                 "preco": 50,  "a_partir": false, "duracao": 30 },
+  { "slug": "barba-pezinho-sobrancelha",       "nome": "Barba + Pezinho + Sobrancelha",        "categoria": "Combos",                 "preco": 60,  "a_partir": false, "duracao": 30 },
+  { "slug": "corte-hidratacao",                "nome": "Corte + Hidratação",                   "categoria": "Combos",                 "preco": 60,  "a_partir": true,  "duracao": 30 },
+  { "slug": "corte-sobrancelha-hidratacao",    "nome": "Corte + Sobrancelha + Hidratação",     "categoria": "Combos",                 "preco": 75,  "a_partir": true,  "duracao": 30 },
+  { "slug": "corte-barba-hidratacao",          "nome": "Corte + Barba + Hidratação",           "categoria": "Combos",                 "preco": 95,  "a_partir": true,  "duracao": 60 },
+  { "slug": "corte-barba-sobrancelha-hidratacao", "nome": "Corte + Barba + Sobrancelha + Hidratação", "categoria": "Combos",          "preco": 110, "a_partir": true,  "duracao": 60 },
+  { "slug": "corte-botox-selagem",             "nome": "Corte + Botox ou Selagem",             "categoria": "Combos",                 "preco": 105, "a_partir": true,  "duracao": 60 },
+  { "slug": "corte-barba-selagem-botox",       "nome": "Corte + Barba + Selagem ou Botox",     "categoria": "Combos",                 "preco": 140, "a_partir": true,  "duracao": 90 },
+
+  { "slug": "hidratacao",                      "nome": "Hidratação",                           "categoria": "Tratamentos capilares",  "preco": 25,  "a_partir": true,  "duracao": 10 },
+  { "slug": "nutricao-capilar",                "nome": "Nutrição Capilar",                     "categoria": "Tratamentos capilares",  "preco": 30,  "a_partir": true,  "duracao": 10 },
+  { "slug": "selagem",                         "nome": "Selagem",                              "categoria": "Tratamentos capilares",  "preco": 70,  "a_partir": true,  "duracao": 30 },
+  { "slug": "botox",                           "nome": "Botox",                                "categoria": "Tratamentos capilares",  "preco": 70,  "a_partir": true,  "duracao": 60 },
+  { "slug": "tintura-cabelo",                  "nome": "Tintura de cabelo",                    "categoria": "Tratamentos capilares",  "preco": 40,  "a_partir": true,  "duracao": 30 },
+
+  { "slug": "sobrancelha",                     "nome": "Sobrancelha",                          "categoria": "Sobrancelha e estética", "preco": 15,  "a_partir": false, "duracao": 10 },
+  { "slug": "sobrancelha-cera",                "nome": "Sobrancelha na cera",                  "categoria": "Sobrancelha e estética", "preco": 25,  "a_partir": false, "duracao": 10 },
+  { "slug": "epilacao-nazal",                  "nome": "Epilação Nazal",                       "categoria": "Sobrancelha e estética", "preco": 15,  "a_partir": false, "duracao": 10 },
+  { "slug": "epilacao-orelha",                 "nome": "Epilação Orelha",                      "categoria": "Sobrancelha e estética", "preco": 15,  "a_partir": false, "duracao": 10 },
+  { "slug": "epilacao-nazal-orelha",           "nome": "Epilação Nazal e Orelha",              "categoria": "Sobrancelha e estética", "preco": 30,  "a_partir": false, "duracao": 10 },
+  { "slug": "limpeza-pele-black-mascara",      "nome": "Limpeza de pele Black Máscara",        "categoria": "Sobrancelha e estética", "preco": 35,  "a_partir": false, "duracao": 30 },
+  { "slug": "limpeza-pele-profunda",           "nome": "Limpeza de pele profunda",             "categoria": "Sobrancelha e estética", "preco": 70,  "a_partir": false, "duracao": 30 }
+]

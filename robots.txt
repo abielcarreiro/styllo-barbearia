@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /cancelar.html
+
+Sitemap: https://styllo-barbearia.pages.dev/sitemap.xml

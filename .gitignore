@@ -1,0 +1,13 @@
+# Pasta gerada pelo build.sh (publicada pelo Cloudflare)
+dist/
+
+# Dependências e arquivos locais
+node_modules/
+.wrangler/
+.env
+.env.*
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

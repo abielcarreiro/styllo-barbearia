@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel | Styllo Barbearia</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0B0B0B">
+  <link rel="icon" href="../logo.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+
+  <!-- Carregando -->
+  <div class="tela tela--centro" id="tela-carregando">
+    <p class="muted">Carregando…</p>
+  </div>
+
+  <!-- Aviso de configuração -->
+  <div class="tela tela--centro" id="tela-config" hidden>
+    <div class="auth-card">
+      <img src="../logo.jpg" alt="Styllo Barbearia" width="150" height="150" class="auth-logo">
+      <h1>Painel em configuração</h1>
+      <p class="muted">Preencha <code>supabaseUrl</code> e <code>supabaseAnonKey</code> no arquivo <code>config.js</code> (veja <code>supabase/COMO-CONFIGURAR.md</code>).</p>
+    </div>
+  </div>
+
+  <!-- Login -->
+  <div class="tela tela--centro" id="tela-login" hidden>
+    <form class="auth-card" id="form-login" novalidate>
+      <img src="../logo.jpg" alt="Styllo Barbearia" width="150" height="150" class="auth-logo">
+      <h1>Painel</h1>
+      <div class="field">
+        <label for="login-email">E-mail</label>
+        <input id="login-email" type="email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="login-senha">Senha</label>
+        <input id="login-senha" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn btn--primary btn--block" type="submit">Entrar</button>
+      <p class="form-status" id="login-status" role="status" aria-live="polite"></p>
+      <button class="link-btn" type="button" id="btn-esqueci">Esqueci minha senha</button>
+    </form>
+  </div>
+
+  <!-- Nova senha (link de recuperação) -->
+  <div class="tela tela--centro" id="tela-nova-senha" hidden>
+    <form class="auth-card" id="form-nova-senha" novalidate>
+      <h1>Nova senha</h1>
+      <div class="field">
+        <label for="nova-senha">Nova senha (mínimo 8 caracteres)</label>
+        <input id="nova-senha" type="password" autocomplete="new-password" minlength="8" required>
+      </div>
+      <button class="btn btn--primary btn--block" type="submit">Salvar senha</button>
+      <p class="form-status" id="nova-senha-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <!-- Sem acesso -->
+  <div class="tela tela--centro" id="tela-sem-acesso" hidden>
+    <div class="auth-card">
+      <h1>Acesso pendente</h1>
+      <p class="muted">Sua conta foi criada, mas o dono ainda não liberou o seu acesso ao painel.</p>
+      <button class="btn btn--ghost btn--block" type="button" data-sair>Sair</button>
+    </div>
+  </div>
+
+  <!-- Aplicativo -->
+  <div id="app" hidden>
+    <header class="admin-top">
+      <a class="admin-brand" href="#agenda"><img src="../logo.jpg" alt="Styllo Barbearia" width="150" height="150"></a>
+      <nav class="admin-nav" id="admin-nav" aria-label="Seções do painel"></nav>
+      <div class="admin-user">
+        <span id="usuario-nome"></span>
+        <button class="btn btn--ghost btn--sm" type="button" data-sair>Sair</button>
+      </div>
+    </header>
+
+    <main class="admin-main" id="admin-main">
+      <section class="admin-secao" id="secao-agenda" data-secao="agenda" hidden></section>
+      <section class="admin-secao" id="secao-servicos" data-secao="servicos" hidden></section>
+      <section class="admin-secao" id="secao-equipe" data-secao="equipe" hidden></section>
+      <section class="admin-secao" id="secao-ajustes" data-secao="ajustes" hidden></section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="../config.js" defer></script>
+  <script src="admin.js" defer></script>
+  <script src="agenda.js" defer></script>
+  <script src="servicos.js" defer></script>
+  <script src="equipe.js" defer></script>
+  <script src="ajustes.js" defer></script>
+</body>
+</html>
