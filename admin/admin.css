@@ -417,3 +417,48 @@ code { font-size: .9em; color: var(--gold); }
   font-weight: 500;
 }
 .toast[data-tipo="erro"] { background: #F09A8C; color: #1a0b08; }
+
+/* ---------- Foto do barbeiro ---------- */
+.field-rotulo {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-display);
+  font-size: .85rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.foto-editor { display: flex; gap: 16px; align-items: flex-start; }
+.foto-preview {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 96px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  font-size: .75rem;
+  color: var(--muted);
+}
+.foto-preview img { width: 100%; height: 100%; object-fit: cover; }
+.foto-acoes { display: grid; gap: 8px; justify-items: start; }
+.foto-acoes .link-btn { margin: 0; padding: 0; }
+.foto-acoes .dica { margin: 0; }
+
+.pessoa { display: inline-flex; align-items: center; gap: 10px; }
+.avatar {
+  flex: none;
+  width: 36px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 3px;
+}
+.avatar--vazio {
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  font-family: var(--font-display);
+  color: var(--muted);
+}

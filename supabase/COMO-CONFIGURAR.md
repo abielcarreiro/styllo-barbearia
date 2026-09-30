@@ -16,6 +16,12 @@ Leva uns 15 minutos. Tudo pelo navegador.
 3. Deve aparecer "Success. No rows returned".
    Rode esse arquivo **uma vez só**. Se rodar de novo, ele dá erro porque as tabelas já existem.
 
+## 2.1 Atualizações do banco
+Rode também, **em ordem**, os arquivos da pasta `supabase/migracoes/` (SQL Editor > New query > colar > Run):
+- `002_fotos_barbeiros.sql`: cria o espaço para as fotos dos barbeiros.
+
+Esses arquivos podem ser rodados mais de uma vez sem problema.
+
 ## 3. Conectar o site
 1. Abra **Project Settings > API**.
 2. Copie a **Project URL** e a chave **anon public**.

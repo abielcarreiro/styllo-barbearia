@@ -61,7 +61,9 @@
         barbeiros.map(function (b) {
           return (
             "<tr" + (b.ativo ? "" : ' class="linha-inativa"') + ">" +
-              '<td data-rotulo="Barbeiro">' + A.esc(b.nome) + "</td>" +
+              '<td data-rotulo="Barbeiro"><span class="pessoa">' +
+                (b.foto_url ? '<img class="avatar" src="' + A.esc(b.foto_url) + '" alt="" width="36" height="45" loading="lazy">' : '<span class="avatar avatar--vazio" aria-hidden="true">' + A.esc(b.nome.charAt(0).toUpperCase()) + "</span>") +
+                A.esc(b.nome) + "</span></td>" +
               '<td data-rotulo="Especialidade">' + A.esc(b.especialidade || "—") + "</td>" +
               '<td data-rotulo="Situação">' + (b.ativo ? "Ativo" : "Inativo") + "</td>" +
               '<td class="td-acoes"><button class="btn btn--ghost btn--sm" type="button" data-acao="editar-barbeiro" data-id="' + b.id + '">Editar</button></td>' +
@@ -96,17 +98,112 @@
       : '<div class="vazio"><p>Nenhuma conta criada ainda.</p></div>';
   }
 
+  /* ---------- Fotos (Supabase Storage, pasta "barbeiros") ---------- */
+  const BUCKET = "barbeiros";
+
+  // Recorta em retrato 4:5, reduz para 800x1000 e converte em JPEG
+  function prepararFoto(arquivo) {
+    return new Promise(function (resolve, reject) {
+      if (!/^image\/(jpeg|png|webp)$/.test(arquivo.type)) return reject("Use uma foto JPG, PNG ou WEBP.");
+      if (arquivo.size > 15 * 1024 * 1024) return reject("A foto é muito grande (máximo 15 MB).");
+      const url = URL.createObjectURL(arquivo);
+      const img = new Image();
+      img.onload = function () {
+        const W = 800, H = 1000;
+        const iw = img.naturalWidth, ih = img.naturalHeight;
+        let sw = iw, sh = ih, sx = 0, sy = 0;
+        if (iw / ih > W / H) {
+          sw = ih * W / H;
+          sx = (iw - sw) / 2;
+        } else {
+          sh = iw * H / W;
+          sy = (ih - sh) * 0.3; // fotos altas: prioriza a parte de cima (rosto)
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = W;
+        canvas.height = H;
+        canvas.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(function (blob) {
+          if (blob) resolve(blob);
+          else reject("Não foi possível processar a foto.");
+        }, "image/jpeg", 0.85);
+      };
+      img.onerror = function () {
+        URL.revokeObjectURL(url);
+        reject("Não foi possível abrir essa foto. Tente outra (JPG ou PNG).");
+      };
+      img.src = url;
+    });
+  }
+
+  // ".../object/public/barbeiros/arquivo.jpg" -> "arquivo.jpg"
+  function caminhoDaFoto(url) {
+    const m = /\/object\/public\/barbeiros\/([^?]+)/.exec(url || "");
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+
+  function apagarArquivo(url) {
+    const caminho = caminhoDaFoto(url);
+    if (caminho) A.db.storage.from(BUCKET).remove([caminho]).catch(function () {});
+  }
+
+  // Envia a foto nova, grava o endereço no barbeiro e apaga a antiga
+  function salvarFoto(barbeiroId, blob, fotoAntiga) {
+    const caminho = barbeiroId + "-" + Date.now() + ".jpg";
+    return A.ok(A.db.storage.from(BUCKET).upload(caminho, blob, { contentType: "image/jpeg", cacheControl: "31536000" }))
+      .then(function () {
+        const url = A.db.storage.from(BUCKET).getPublicUrl(caminho).data.publicUrl;
+        return A.ok(A.db.from("barbeiros").update({ foto_url: url }).eq("id", barbeiroId).select("id"));
+      })
+      .then(function () { apagarArquivo(fotoAntiga); });
+  }
+
   function editarBarbeiro(b) {
     const novo = !b;
-    b = b || { nome: "", especialidade: "", instagram: "", ativo: true, ordem: barbeiros.length + 1 };
+    b = b || { nome: "", especialidade: "", instagram: "", foto_url: null, ativo: true, ordem: barbeiros.length + 1 };
+    const foto = { nova: null, remover: false };
     A.dialogo({
       titulo: novo ? "Novo barbeiro" : "Editar barbeiro",
       corpo:
         '<div class="field"><label for="b-nome">Nome</label><input id="b-nome" name="nome" type="text" maxlength="80" value="' + A.esc(b.nome) + '"></div>' +
         '<div class="field"><label for="b-esp">Especialidade <span class="optional">(opcional)</span></label><input id="b-esp" name="especialidade" type="text" maxlength="80" value="' + A.esc(b.especialidade || "") + '"></div>' +
         '<div class="field"><label for="b-ig">Instagram <span class="optional">(opcional, sem @)</span></label><input id="b-ig" name="instagram" type="text" maxlength="60" value="' + A.esc(b.instagram || "") + '"></div>' +
+        '<div class="field"><span class="field-rotulo">Foto</span>' +
+          '<div class="foto-editor">' +
+            '<div class="foto-preview" data-preview>' + (b.foto_url ? '<img src="' + A.esc(b.foto_url) + '" alt="">' : "<span>Sem foto</span>") + "</div>" +
+            '<div class="foto-acoes">' +
+              '<label class="btn btn--ghost btn--sm" for="b-foto">' + (b.foto_url ? "Trocar foto" : "Escolher foto") + "</label>" +
+              '<input id="b-foto" type="file" accept="image/jpeg,image/png,image/webp" class="visually-hidden">' +
+              (b.foto_url ? '<button class="link-btn" type="button" data-remover-foto>Remover foto</button>' : "") +
+              '<p class="dica">A foto é recortada em formato retrato (4:5). Prefira uma foto do peito para cima.</p>' +
+            "</div>" +
+          "</div>" +
+        "</div>" +
         '<div class="field"><label for="b-ordem">Ordem no site</label><input id="b-ordem" name="ordem" type="number" step="1" value="' + b.ordem + '"></div>' +
         '<label class="check"><input type="checkbox" name="ativo"' + (b.ativo ? " checked" : "") + "> Ativo (aparece no agendamento)</label>",
+      aoAbrir: function (form) {
+        const preview = A.$("[data-preview]", form);
+        const status = A.$("[data-status]", form.closest("dialog"));
+        A.$("#b-foto", form).addEventListener("change", function () {
+          const arquivo = this.files && this.files[0];
+          if (!arquivo) return;
+          status.textContent = "";
+          prepararFoto(arquivo).then(function (blob) {
+            foto.nova = blob;
+            foto.remover = false;
+            preview.innerHTML = '<img src="' + URL.createObjectURL(blob) + '" alt="">';
+          }).catch(function (msg) {
+            status.textContent = msg;
+          });
+        });
+        const remover = A.$("[data-remover-foto]", form);
+        if (remover) remover.addEventListener("click", function () {
+          foto.nova = null;
+          foto.remover = true;
+          preview.innerHTML = "<span>Sem foto</span>";
+        });
+      },
       aoEnviar: function (form, fechar) {
         const v = A.valores(form);
         const dados = {
@@ -120,7 +217,14 @@
         const req = novo
           ? A.db.from("barbeiros").insert(dados).select("id")
           : A.db.from("barbeiros").update(dados).eq("id", b.id).select("id");
-        return A.ok(req).then(function () {
+        return A.ok(req).then(function (linhas) {
+          const id = novo ? linhas[0].id : b.id;
+          if (foto.nova) return salvarFoto(id, foto.nova, b.foto_url);
+          if (foto.remover) {
+            return A.ok(A.db.from("barbeiros").update({ foto_url: null }).eq("id", id).select("id"))
+              .then(function () { apagarArquivo(b.foto_url); });
+          }
+        }).then(function () {
           fechar();
           A.aviso(novo ? "Barbeiro cadastrado." : "Barbeiro atualizado.");
           carregar();
