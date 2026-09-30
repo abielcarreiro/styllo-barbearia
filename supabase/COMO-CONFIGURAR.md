@@ -19,6 +19,7 @@ Leva uns 15 minutos. Tudo pelo navegador.
 ## 2.1 Atualizações do banco
 Rode também, **em ordem**, os arquivos da pasta `supabase/migracoes/` (SQL Editor > New query > colar > Run):
 - `002_fotos_barbeiros.sql`: cria o espaço para as fotos dos barbeiros.
+- `003_servicos_fino_trato.sql`: troca o catálogo pelos 19 serviços da Fino Trato.
 
 Esses arquivos podem ser rodados mais de uma vez sem problema.
 
@@ -44,7 +45,7 @@ Esses arquivos podem ser rodados mais de uma vez sem problema.
 A partir daí, **todo o resto é feito pelo painel**:
 - **Equipe**: cadastre os barbeiros (nome e especialidade). Sem barbeiro ativo, o agendamento online não abre.
 - **Equipe > Acessos**: libere o login dos barbeiros (as contas são criadas como no passo 1, sem o SQL).
-- **Serviços**: os 32 serviços já vêm cadastrados com preço e duração. Edite quando quiser.
+- **Serviços**: os 19 serviços já vêm cadastrados com preço e duração. Edite quando quiser.
 - **Ajustes**: horário de funcionamento, intervalo entre horários, antecedência mínima.
 
 ## 5. Bloquear cadastros de estranhos

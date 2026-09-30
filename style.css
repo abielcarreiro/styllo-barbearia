@@ -1380,3 +1380,9 @@ main { display: block; }
     var(--bg);
 }
 .hero::before { background: linear-gradient(180deg, transparent 65%, var(--bg) 100%); }
+
+/* Descrição dos serviços (avisos, promoções) */
+.service-desc { font-size: .9rem; line-height: 1.5; }
+@media (max-width: 767px) {
+  .service-desc { grid-column: 1 / -1; margin: 2px 0 4px; }
+}

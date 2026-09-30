@@ -85,6 +85,12 @@
     return isoToDate(iso).toLocaleDateString("pt-BR", Object.assign({ timeZone: "UTC" }, options));
   }
 
+  // 30 -> "30 min", 90 -> "1h 30min"
+  function formatDuracao(min) {
+    if (min < 60) return min + " min";
+    return Math.floor(min / 60) + "h" + (min % 60 ? " " + (min % 60) + "min" : "");
+  }
+
   function setStatus(message, isError) {
     el.status.textContent = message || "";
     el.status.classList.toggle("is-error", Boolean(isError));
@@ -135,7 +141,7 @@
           '<input type="radio" name="servico" value="' + s.id + '">' +
           '<span class="choice-body">' +
             '<span class="choice-title">' + escapeHTML(s.nome) + "</span>" +
-            '<span class="choice-meta">' + s.duracao_min + " min" + (s.descricao ? " · " + escapeHTML(s.descricao) : "") + "</span>" +
+            '<span class="choice-meta">' + formatDuracao(s.duracao_min) + (s.descricao ? " · " + escapeHTML(s.descricao) : "") + "</span>" +
           "</span>" +
           '<span class="choice-price">' + formatPrice(s) + "</span>" +
         "</label>"
@@ -229,7 +235,7 @@
       return;
     }
     el.resumo.hidden = false;
-    document.getElementById("resumo-servico").textContent = state.servico.nome + " (" + state.servico.duracao_min + " min)";
+    document.getElementById("resumo-servico").textContent = state.servico.nome + " (" + formatDuracao(state.servico.duracao_min) + ")";
     document.getElementById("resumo-barbeiro").textContent = barbeiro ? barbeiro.nome : "Sem preferência";
     document.getElementById("resumo-quando").textContent = state.dia
       ? formatDay(state.dia, { weekday: "long", day: "2-digit", month: "long" }) + (state.horario ? " às " + state.horario : " (escolha o horário)")

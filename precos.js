@@ -21,6 +21,15 @@
     return "R$ " + Number(preco).toFixed(2).replace(".", ",");
   }
 
+  // 30 -> "30 min", 90 -> "1h 30min", 180 -> "3h"
+  function formatDuracao(min) {
+    min = Number(min) || 0;
+    if (min < 60) return min + " min";
+    const h = Math.floor(min / 60);
+    const m = min % 60;
+    return h + "h" + (m ? " " + m + "min" : "");
+  }
+
   // Texto do preço: "R$ 35,00", "a partir de R$ 70,00" ou "A consultar"
   function precoHTML(s) {
     if (!(Number(s.preco) > 0)) return "A consultar";
@@ -54,7 +63,8 @@
             '          <span class="service-leader" aria-hidden="true"></span>\n' +
             '          <span class="service-price">' + precoHTML(s) + "</span>\n" +
             "        </div>\n" +
-            '        <span class="service-meta">' + CLOCK + " " + s.duracao_min + " min</span>\n" +
+            (s.descricao ? '        <p class="service-desc">' + esc(s.descricao) + "</p>\n" : "") +
+            '        <span class="service-meta">' + CLOCK + " " + formatDuracao(s.duracao_min) + "</span>\n" +
             "      </div>\n" +
             '      <div class="service-foot">\n' +
             '        <a class="btn btn--primary btn--sm" href="agendar.html?servico=' + encodeURIComponent(s.slug) + '" aria-label="Agendar ' + esc(s.nome) + '">Agendar</a>\n' +
@@ -68,7 +78,7 @@
     }).join("");
   }
 
-  const api = { renderLista: renderLista, precoHTML: precoHTML };
+  const api = { renderLista: renderLista, precoHTML: precoHTML, formatDuracao: formatDuracao };
   if (typeof module !== "undefined" && module.exports) {
     module.exports = api; // usado pelo gerador da página estática
     return;
@@ -81,7 +91,7 @@
 
   const url =
     cfg.supabaseUrl.replace(/\/$/, "") +
-    "/rest/v1/servicos?select=slug,nome,categoria,duracao_min,preco,preco_a_partir&ativo=eq.true&order=ordem";
+    "/rest/v1/servicos?select=slug,nome,categoria,descricao,duracao_min,preco,preco_a_partir&ativo=eq.true&order=ordem";
 
   fetch(url, { headers: { apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + cfg.supabaseAnonKey } })
     .then(function (res) { return res.ok ? res.json() : Promise.reject(res.status); })
