@@ -23,6 +23,7 @@
     dia: null,
     barbeiro: "",       // filtro (dono)
     barbeiros: [],
+    servicos: [],
     lista: [],
     timer: null
   };
@@ -35,8 +36,9 @@
     secao.innerHTML =
       '<div class="admin-head">' +
         "<h1>Agenda</h1>" +
+        '<button class="btn btn--primary btn--sm" type="button" data-acao="novo">+ Novo agendamento</button>' +
       "</div>" +
-      '<p class="dica">Agendamentos feitos pelos clientes no site. A lista se atualiza sozinha a cada minuto.</p>' +
+      '<p class="dica">Agendamentos do site e os lançados aqui no painel (cliente que ligou ou chegou sem marcar). A lista se atualiza sozinha a cada minuto.</p>' +
       '<div class="toolbar">' +
         '<div class="date-nav">' +
           '<button class="icon-btn" type="button" data-acao="anterior" aria-label="Dia anterior">‹</button>' +
@@ -68,11 +70,22 @@
       if (acao === "anterior") { estado.dia = A.addDias(estado.dia, -1); carregar(); }
       else if (acao === "proximo") { estado.dia = A.addDias(estado.dia, 1); carregar(); }
       else if (acao === "hoje") { estado.dia = A.hojeISO(); carregar(); }
+      else if (acao === "novo") novoAgendamento();
       else if (acao === "concluir") concluir(id);
       else if (acao === "desfazer") desfazer(id);
       else if (acao === "reenviar") enviarConfirmacao(buscar(id), abrirJanela());
       else mudarStatus(id, acao);
     });
+
+    // Novo agendamento pelo site: recarrega a lista se estiver aberta
+    document.addEventListener("styllo:novo-agendamento", function () {
+      if (!secao.hidden && !document.querySelector("dialog[open]")) carregar(true);
+    });
+
+    // Serviços para o novo agendamento
+    A.ok(A.db.from("servicos").select("id, nome, duracao_min, preco, preco_a_partir").eq("ativo", true).order("ordem"))
+      .then(function (s) { estado.servicos = s; })
+      .catch(function (err) { A.aviso(A.mensagemErro(err), "erro"); });
 
     // Barbeiros para o filtro do dono
     A.ok(A.db.from("barbeiros").select("id, nome, ativo").order("ordem")).then(function (barbeiros) {
@@ -103,8 +116,7 @@
     if (!silencioso) A.$("#agenda-lista", secao).innerHTML = '<p class="muted">Carregando…</p>';
 
     let q = A.db.from("agendamentos")
-      .select("id, inicio, fim, status, preco, observacoes, token, barbeiro_id, clientes(nome, telefone), servicos(nome, preco_a_partir), barbeiros(nome)")
-      .eq("origem", "site")
+      .select("id, inicio, fim, status, preco, observacoes, origem, token, barbeiro_id, clientes(nome, telefone), servicos(nome, preco_a_partir), barbeiros(nome)")
       .gte("inicio", A.momento(estado.dia))
       .lt("inicio", A.momento(A.addDias(estado.dia, 1)))
       .order("inicio");
@@ -245,6 +257,7 @@
           '<div class="ag-info">' +
             '<p class="ag-cliente">' + A.esc(a.clientes.nome) +
               ' <span class="badge ' + st.classe + '">' + st.rotulo + "</span>" +
+              (a.origem === "admin" ? '<span class="badge badge--origem" title="Lançado pelo painel">Balcão</span>' : "") +
             "</p>" +
             '<p class="ag-detalhe">' + A.esc(a.servicos.nome) +
               (mostrarBarbeiro ? " · " + A.esc(a.barbeiros.nome) : "") +
@@ -329,6 +342,93 @@
         carregar(true);
       })
       .catch(function (err) { A.aviso(A.mensagemErro(err), "erro"); });
+  }
+
+  /* ---------- Novo agendamento pelo painel ---------- */
+  function novoAgendamento() {
+    if (!estado.servicos.length) {
+      A.aviso("Cadastre ou ative um serviço antes de agendar.", "erro");
+      return;
+    }
+    const ativos = estado.barbeiros.filter(function (b) { return b.ativo; });
+    const opcoesBarbeiro = A.ehDono()
+      ? ativos.map(function (b) {
+          return '<option value="' + b.id + '"' + (b.id === estado.barbeiro ? " selected" : "") + ">" + A.esc(b.nome) + "</option>";
+        }).join("")
+      : '<option value="' + A.perfil.barbeiro_id + '">Eu</option>';
+
+    A.dialogo({
+      titulo: "Novo agendamento",
+      confirmar: "Agendar",
+      corpo:
+        '<div class="field"><label for="n-serv">Serviço</label><select id="n-serv" name="servico">' +
+          estado.servicos.map(function (s) {
+            return '<option value="' + s.id + '">' + A.esc(s.nome) + " · " + s.duracao_min + " min</option>";
+          }).join("") +
+        "</select></div>" +
+        '<div class="field"><label for="n-barb">Barbeiro</label><select id="n-barb" name="barbeiro">' + opcoesBarbeiro + "</select></div>" +
+        '<div class="field-row">' +
+          '<div class="field"><label for="n-dia">Dia</label><input id="n-dia" name="dia" type="date" value="' + estado.dia + '"></div>' +
+          '<div class="field"><label for="n-hora">Horário</label><input id="n-hora" name="hora" type="time" step="300"></div>' +
+        "</div>" +
+        '<p class="dica" data-livres>Carregando horários livres…</p>' +
+        '<div class="field"><label for="n-nome">Nome do cliente</label><input id="n-nome" name="nome" type="text" maxlength="80" autocomplete="off"></div>' +
+        '<div class="field"><label for="n-tel">WhatsApp do cliente</label><input id="n-tel" name="telefone" type="tel" inputmode="tel" placeholder="(00) 00000-0000"></div>' +
+        '<div class="field"><label for="n-obs">Observações <span class="optional">(opcional)</span></label><textarea id="n-obs" name="observacoes" maxlength="500"></textarea></div>',
+      aoAbrir: function (form) {
+        A.mascaraTelefone(form.telefone);
+        const livres = A.$("[data-livres]", form);
+        let pedido = 0;
+
+        // Sugere os horários livres do dia; o horário pode ser digitado à mão (encaixe)
+        const buscarLivres = function () {
+          const n = ++pedido;
+          if (!form.dia.value || !form.barbeiro.value) return;
+          livres.textContent = "Carregando horários livres…";
+          A.ok(A.db.rpc("horarios_livres", { p_servico: form.servico.value, p_data: form.dia.value, p_barbeiro: form.barbeiro.value }))
+            .then(function (r) {
+              if (n !== pedido) return;
+              livres.innerHTML = r.length
+                ? "Livres: <span class=\"chips\">" + r.map(function (h) {
+                    return '<button type="button" data-hora="' + h.horario + '" aria-pressed="' + (form.hora.value === h.horario) + '">' + h.horario + "</button>";
+                  }).join("") + "</span>"
+                : "Nenhum horário livre na grade deste dia. Você ainda pode digitar um horário de encaixe.";
+            })
+            .catch(function () { if (n === pedido) livres.textContent = "Digite o horário."; });
+        };
+        livres.addEventListener("click", function (e) {
+          const b = e.target.closest("[data-hora]");
+          if (!b) return;
+          form.hora.value = b.dataset.hora;
+          A.$$("[data-hora]", livres).forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+        });
+        form.servico.addEventListener("change", buscarLivres);
+        form.barbeiro.addEventListener("change", buscarLivres);
+        form.dia.addEventListener("change", buscarLivres);
+        buscarLivres();
+      },
+      aoEnviar: function (form, fechar) {
+        const v = A.valores(form);
+        if (!v.barbeiro) throw "Escolha o barbeiro.";
+        if (!v.dia || !v.hora) throw "Informe o dia e o horário.";
+        if (v.nome.length < 2) throw "Informe o nome do cliente.";
+        if (v.telefone.replace(/\D/g, "").length < 10) throw "Informe o WhatsApp com DDD.";
+        return A.ok(A.db.rpc("criar_agendamento_admin", {
+          p_servico: v.servico,
+          p_barbeiro: v.barbeiro,
+          p_data: v.dia,
+          p_horario: v.hora.slice(0, 5),
+          p_nome: v.nome,
+          p_telefone: v.telefone,
+          p_observacoes: v.observacoes || null
+        })).then(function () {
+          fechar();
+          A.aviso("Agendamento criado.");
+          if (estado.dia !== v.dia) estado.dia = v.dia;
+          carregar(true);
+        });
+      }
+    });
   }
 
   A.modulo("agenda", { titulo: "Agenda", iniciar: iniciar, mostrar: mostrar });

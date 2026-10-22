@@ -465,3 +465,53 @@ code { font-size: .9em; color: var(--gold); }
 
 /* Títulos do login na fonte vintage */
 .auth-card h1 { font-family: var(--font-title); font-weight: 400; letter-spacing: .02em; }
+
+/* ---------- Campos lado a lado ---------- */
+.field-row { display: grid; gap: 0 16px; }
+@media (min-width: 500px) { .field-row { grid-template-columns: 1fr 1fr; } }
+.admin-dialog-body textarea,
+.admin-dialog-body select,
+.admin-dialog-body input { width: 100%; }
+.admin-dialog-body .check input { width: 18px; }
+
+/* Botões de horário livre (novo agendamento) */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chips button {
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--text);
+  font: inherit;
+  font-size: .82rem;
+  cursor: pointer;
+}
+.chips button:hover, .chips button[aria-pressed="true"] { border-color: var(--primary); color: var(--primary); }
+
+/* Etiqueta "Balcão" na agenda */
+.badge--origem { background: rgba(230, 220, 198, .1); color: var(--gold); margin-left: 4px; }
+
+/* ---------- Caixa ---------- */
+.valor-entrada { color: #8FD3A5; }
+.valor-saida { color: #F09A8C; }
+.tabela td.num, .tabela th.num { text-align: right; white-space: nowrap; }
+.toolbar-acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------- Clientes ---------- */
+.busca { width: 100%; max-width: 360px; }
+.historico { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+.historico li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: .9rem;
+}
+.historico small { color: var(--muted); }
+
+/* ---------- Avisos de novo agendamento ---------- */
+.btn-avisos { white-space: nowrap; }
+.btn-avisos[aria-pressed="true"] { border-color: var(--primary); color: var(--primary); }

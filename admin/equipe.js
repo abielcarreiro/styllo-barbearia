@@ -161,7 +161,7 @@
 
   function editarBarbeiro(b) {
     const novo = !b;
-    b = b || { nome: "", especialidade: "", instagram: "", foto_url: null, ativo: true, ordem: barbeiros.length + 1 };
+    b = b || { nome: "", especialidade: "", instagram: "", foto_url: null, comissao_percent: 0, ativo: true, ordem: barbeiros.length + 1 };
     const foto = { nova: null, remover: false };
     A.dialogo({
       titulo: novo ? "Novo barbeiro" : "Editar barbeiro",
@@ -180,7 +180,11 @@
             "</div>" +
           "</div>" +
         "</div>" +
-        '<div class="field"><label for="b-ordem">Ordem no site</label><input id="b-ordem" name="ordem" type="number" step="1" value="' + b.ordem + '"></div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label for="b-com">Comissão (%)</label><input id="b-com" name="comissao_percent" type="number" min="0" max="100" step="0.5" inputmode="decimal" value="' + (Number(b.comissao_percent) || 0) + '"></div>' +
+          '<div class="field"><label for="b-ordem">Ordem no site</label><input id="b-ordem" name="ordem" type="number" step="1" value="' + b.ordem + '"></div>' +
+        "</div>" +
+        '<p class="dica">A comissão aparece no Caixa e não é mostrada no site.</p>' +
         '<label class="check"><input type="checkbox" name="ativo"' + (b.ativo ? " checked" : "") + "> Ativo (aparece no agendamento)</label>",
       aoAbrir: function (form) {
         const preview = A.$("[data-preview]", form);
@@ -211,9 +215,11 @@
           especialidade: v.especialidade || null,
           instagram: v.instagram.replace(/^@/, "") || null,
           ordem: parseInt(v.ordem, 10) || 0,
+          comissao_percent: Number(String(v.comissao_percent).replace(",", ".")) || 0,
           ativo: v.ativo
         };
         if (dados.nome.length < 2) throw "Informe o nome.";
+        if (dados.comissao_percent < 0 || dados.comissao_percent > 100) throw "A comissão deve ficar entre 0 e 100%.";
         const req = novo
           ? A.db.from("barbeiros").insert(dados).select("id")
           : A.db.from("barbeiros").update(dados).eq("id", b.id).select("id");

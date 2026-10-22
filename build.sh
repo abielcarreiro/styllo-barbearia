@@ -6,7 +6,7 @@ rm -rf dist
 mkdir dist
 for item in *; do
   case "$item" in
-    supabase|dist|build.sh|README.md|node_modules) ;;
+    supabase|dist|build.sh|README.md|node_modules|AutoClicker.exe|ACLib|.gitignore) ;;
     *) cp -R "$item" dist/ ;;
   esac
 done

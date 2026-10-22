@@ -200,6 +200,110 @@
     }
     if (mod.mostrar) mod.mostrar(secao);
     document.title = mod.titulo + " | Painel Fino Trato";
+    if (avisos.naoLidos) atualizarTitulo();
+  }
+
+  /* ---------- Aviso de novo agendamento pelo site ----------
+     Confere a cada 30 s. Ao chegar: aviso na tela, som, contador no título da aba
+     e notificação do navegador (se a pessoa ativou). Barbeiro só recebe os dele (RLS). */
+  const avisos = { desde: null, timer: null, naoLidos: 0, audio: null, tituloBase: "" };
+
+  function bip() {
+    try {
+      if (!avisos.audio) return;
+      const ctx = avisos.audio;
+      [0, 0.18].forEach(function (t) {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.frequency.value = 880;
+        g.gain.setValueAtTime(0.0001, ctx.currentTime + t);
+        g.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + t + 0.15);
+        o.connect(g).connect(ctx.destination);
+        o.start(ctx.currentTime + t);
+        o.stop(ctx.currentTime + t + 0.16);
+      });
+    } catch (e) { /* sem som */ }
+  }
+
+  function atualizarTitulo() {
+    const base = document.title.replace(/^\(\d+\) /, "");
+    document.title = avisos.naoLidos ? "(" + avisos.naoLidos + ") " + base : base;
+  }
+
+  function conferirNovos() {
+    Admin.ok(Admin.db.from("agendamentos")
+      .select("id, inicio, criado_em, clientes(nome), servicos(nome)")
+      .eq("origem", "site")
+      .gt("criado_em", avisos.desde)
+      .order("criado_em"))
+      .then(function (novos) {
+        if (!novos.length) return;
+        avisos.desde = novos[novos.length - 1].criado_em;
+        const a = novos[novos.length - 1];
+        const texto = (novos.length > 1 ? novos.length + " novos agendamentos. Último: " : "Novo agendamento: ") +
+          a.clientes.nome + ", " + a.servicos.nome + " em " + Admin.dataCurta(a.inicio) + " às " + Admin.hora(a.inicio);
+        Admin.aviso(texto);
+        bip();
+        if (document.hidden) {
+          avisos.naoLidos += novos.length;
+          atualizarTitulo();
+        }
+        if ("Notification" in window && Notification.permission === "granted" && document.hidden) {
+          try { new Notification("Fino Trato · novo agendamento", { body: texto, icon: "../logo.jpg", tag: "novo-agendamento" }); } catch (e) { /* ignora */ }
+        }
+        document.dispatchEvent(new CustomEvent("styllo:novo-agendamento", { detail: novos }));
+      })
+      .catch(function () { /* tenta de novo no próximo ciclo */ });
+  }
+
+  function iniciarAvisos() {
+    // Parte do agendamento mais recente do banco (não depende do relógio do computador)
+    clearInterval(avisos.timer);
+    Admin.ok(Admin.db.from("agendamentos").select("criado_em").order("criado_em", { ascending: false }).limit(1))
+      .then(function (r) {
+        avisos.desde = r.length ? r[0].criado_em : "1970-01-01T00:00:00Z";
+        avisos.timer = setInterval(conferirNovos, 30000);
+      })
+      .catch(function () {
+        avisos.desde = new Date().toISOString();
+        avisos.timer = setInterval(conferirNovos, 30000);
+      });
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden && avisos.naoLidos) {
+        avisos.naoLidos = 0;
+        atualizarTitulo();
+      }
+    });
+    // O navegador só libera som depois de um clique na página
+    document.addEventListener("click", function () {
+      if (!avisos.audio && (window.AudioContext || window.webkitAudioContext)) {
+        avisos.audio = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }, { once: true });
+
+    const btn = Admin.$("#btn-avisos");
+    if (!btn) return;
+    if (!("Notification" in window)) { btn.hidden = true; return; }
+    const marcar = function () {
+      const ok = Notification.permission === "granted";
+      btn.setAttribute("aria-pressed", String(ok));
+      btn.textContent = ok ? "Avisos ativos" : "Ativar avisos";
+      btn.title = ok
+        ? "Você recebe uma notificação quando chega agendamento pelo site, mesmo com o painel em outra aba."
+        : "Receber notificação quando chegar agendamento pelo site";
+    };
+    btn.addEventListener("click", function () {
+      if (Notification.permission === "denied") {
+        Admin.aviso("As notificações estão bloqueadas. Libere nas configurações do navegador (cadeado ao lado do endereço).", "erro");
+        return;
+      }
+      Notification.requestPermission().then(function () {
+        marcar();
+        if (Notification.permission === "granted") Admin.aviso("Pronto! Você será avisado quando chegar um agendamento pelo site.");
+      });
+    });
+    marcar();
   }
 
   /* ---------- Sessão ---------- */
@@ -215,6 +319,7 @@
         montarMenu();
         mostrarTela("app");
         irPara();
+        iniciarAvisos();
       });
   }
 

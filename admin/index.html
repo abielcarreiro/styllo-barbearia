@@ -76,6 +76,7 @@
       <a class="admin-brand" href="#agenda"><img src="../logo.jpg" alt="Fino Trato Barbearia" width="150" height="150"></a>
       <nav class="admin-nav" id="admin-nav" aria-label="Seções do painel"></nav>
       <div class="admin-user">
+        <button class="btn btn--ghost btn--sm btn-avisos" type="button" id="btn-avisos" aria-pressed="false">Ativar avisos</button>
         <span id="usuario-nome"></span>
         <button class="btn btn--ghost btn--sm" type="button" data-sair>Sair</button>
       </div>
@@ -83,6 +84,9 @@
 
     <main class="admin-main" id="admin-main">
       <section class="admin-secao" id="secao-agenda" data-secao="agenda" hidden></section>
+      <section class="admin-secao" id="secao-bloqueios" data-secao="bloqueios" hidden></section>
+      <section class="admin-secao" id="secao-clientes" data-secao="clientes" hidden></section>
+      <section class="admin-secao" id="secao-caixa" data-secao="caixa" hidden></section>
       <section class="admin-secao" id="secao-servicos" data-secao="servicos" hidden></section>
       <section class="admin-secao" id="secao-equipe" data-secao="equipe" hidden></section>
       <section class="admin-secao" id="secao-ajustes" data-secao="ajustes" hidden></section>
@@ -95,6 +99,9 @@
   <script src="../config.js" defer></script>
   <script src="admin.js" defer></script>
   <script src="agenda.js" defer></script>
+  <script src="bloqueios.js" defer></script>
+  <script src="clientes.js" defer></script>
+  <script src="caixa.js" defer></script>
   <script src="servicos.js" defer></script>
   <script src="equipe.js" defer></script>
   <script src="ajustes.js" defer></script>
