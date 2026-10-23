@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /admin/
 Disallow: /cancelar.html
 
-Sitemap: https://styllo-barbearia.pages.dev/sitemap.xml
+Sitemap: https://demonstracao-sites.pages.dev/barbearia/sitemap.xml
