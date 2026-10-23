@@ -16,13 +16,6 @@ const CONFIG = {
 (function () {
   "use strict";
 
-  // Este é um site de demonstração: avisa o visitante em todas as páginas
-  (function () {
-    const selo = document.createElement("div");
-    selo.className = "demo-badge";
-    selo.innerHTML = "<strong>Demonstração</strong> · dados fictícios. Criado por <a href=\"https://abiel-carreiro.pages.dev/\">Abiel Carreiro</a>";
-    document.body.appendChild(selo);
-  })();
 
   const root = document.documentElement;
   const body = document.body;

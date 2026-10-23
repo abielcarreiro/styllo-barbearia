@@ -1387,20 +1387,29 @@ main { display: block; }
   .service-desc { grid-column: 1 / -1; margin: 2px 0 4px; }
 }
 
-/* Selo de site de demonstração (inserido pelo script.js) */
-.demo-badge {
+
+/* Faixa de site de demonstração (no topo de todas as páginas públicas) */
+:root { --demo-h: 34px; }
+html.tem-demo { --header-h: calc(68px + var(--demo-h)); }
+@media (min-width: 768px) { html.tem-demo { --header-h: calc(76px + var(--demo-h)); } }
+.demo-bar {
   position: fixed;
-  left: max(16px, env(safe-area-inset-left, 0px));
-  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  z-index: 90;
-  max-width: calc(100vw - 120px);
-  padding: 8px 12px;
-  background: rgba(11, 11, 11, .92);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius);
-  color: var(--muted);
-  font-size: .78rem;
-  line-height: 1.35;
+  inset: 0 0 auto 0;
+  z-index: 101;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--demo-h);
+  padding: 0 var(--gutter);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: .8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
 }
-.demo-badge strong { color: var(--primary); font-weight: 600; }
-.demo-badge a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+.demo-bar span { overflow: hidden; text-overflow: ellipsis; }
+.demo-bar a { color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.demo-bar__longo { display: none; }
+@media (min-width: 900px) { .demo-bar__longo { display: inline; } .demo-bar__curto { display: none; } }
+.tem-demo .site-header { top: var(--demo-h); height: calc(var(--header-h) - var(--demo-h)); }
