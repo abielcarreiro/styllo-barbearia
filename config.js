@@ -1,5 +1,5 @@
 /* =========================================================
-   FINO TRATO BARBEARIA — config.js
+   NAVALHA NOBRE BARBEARIA — config.js
    Conexão com o banco de dados (Supabase), usada pelo agendamento e pelo painel admin.
 
    SUBSTITUIR: no Supabase, abra Project Settings > API e copie:
@@ -17,8 +17,8 @@ window.STYLLO = {
 
   // Usados na mensagem de confirmação enviada ao cliente pelo WhatsApp
   barbearia: {
-    nome: "Fino Trato Barbearia",
-    endereco: "Rua Leôncio Wanderley, 444 - Centro, Patos - PB"
+    nome: "Navalha Nobre Barbearia",
+    endereco: "Rua das Navalhas, 100 - Centro, Patos - PB"
   }
 };
 

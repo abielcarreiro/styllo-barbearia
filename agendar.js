@@ -1,5 +1,5 @@
 /* =========================================================
-   FINO TRATO BARBEARIA — agendar.js
+   NAVALHA NOBRE BARBEARIA — agendar.js
    Agendamento online: lê serviços, barbeiros e horários livres do banco
    e cria o agendamento pela função criar_agendamento (supabase/schema.sql).
    ========================================================= */
@@ -48,7 +48,7 @@
 
   if (!db) {
     showAlert("O agendamento online está em configuração. Enquanto isso, fale com a gente pelo WhatsApp.");
-    console.warn("Fino Trato: preencha supabaseUrl e supabaseAnonKey em config.js.");
+    console.warn("Navalha Nobre: preencha supabaseUrl e supabaseAnonKey em config.js.");
     return;
   }
 
@@ -123,7 +123,7 @@
     applyUrlParams();
     form.hidden = false;
   }).catch(function (err) {
-    console.error("Fino Trato: erro ao carregar agendamento", err);
+    console.error("Navalha Nobre: erro ao carregar agendamento", err);
     showAlert("Não foi possível carregar o agendamento agora. Tente novamente em instantes ou fale com a gente pelo WhatsApp.");
   });
 
@@ -222,7 +222,7 @@
       updateSummary();
     }).catch(function (err) {
       if (request !== state.slotsRequest) return;
-      console.error("Fino Trato: erro ao buscar horários", err);
+      console.error("Navalha Nobre: erro ao buscar horários", err);
       el.horarios.innerHTML = '<p class="choice-hint">Não foi possível carregar os horários. Tente novamente.</p>';
     });
   }
@@ -355,7 +355,7 @@
       el.success.focus();
       el.success.scrollIntoView({ behavior: "smooth", block: "start" });
     }).catch(function (err) {
-      console.error("Fino Trato: erro ao agendar", err);
+      console.error("Navalha Nobre: erro ao agendar", err);
       setStatus("Sem conexão com o servidor. Verifique sua internet e tente novamente.", true);
     }).then(function () {
       el.submit.disabled = false;

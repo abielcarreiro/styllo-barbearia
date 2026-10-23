@@ -1,5 +1,5 @@
 /* =========================================================
-   FINO TRATO BARBEARIA — precos.js
+   NAVALHA NOBRE BARBEARIA — precos.js
    Mantém os preços do site iguais aos do painel admin.
    A página já vem com a lista escrita no HTML (bom para o Google e
    para quando o banco estiver fora do ar); se o banco responder,
@@ -107,6 +107,6 @@
       });
     })
     .catch(function (err) {
-      console.warn("Fino Trato: usando preços do HTML (banco indisponível)", err);
+      console.warn("Navalha Nobre: usando preços do HTML (banco indisponível)", err);
     });
 })(typeof window !== "undefined" ? window : globalThis);

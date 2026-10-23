@@ -1,5 +1,5 @@
 /* =========================================================
-   FINO TRATO BARBEARIA — script.js
+   NAVALHA NOBRE BARBEARIA — script.js
    JavaScript puro, sem dependências.
    ========================================================= */
 

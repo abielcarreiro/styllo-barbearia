@@ -1,5 +1,5 @@
 /* =========================================================
-   FINO TRATO BARBEARIA — barbeiros.js
+   NAVALHA NOBRE BARBEARIA — barbeiros.js
    Página Equipe: mostra os barbeiros ativos cadastrados no painel
    (nome, especialidade, Instagram e foto).
    ========================================================= */
@@ -46,7 +46,7 @@
   }
 
   if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.fetch) {
-    aviso('Conheça a equipe no nosso <a href="https://www.instagram.com/finotratobarbearia_" target="_blank" rel="noopener">Instagram</a>.');
+    aviso('Fale com a gente pelo WhatsApp para conhecer a equipe.');
     return;
   }
 
@@ -63,7 +63,7 @@
       lista.innerHTML = barbeiros.map(cartao).join("");
     })
     .catch(function (err) {
-      console.warn("Fino Trato: não foi possível carregar a equipe", err);
-      aviso('Não foi possível carregar a equipe agora. Veja no nosso <a href="https://www.instagram.com/finotratobarbearia_" target="_blank" rel="noopener">Instagram</a>.');
+      console.warn("Navalha Nobre: não foi possível carregar a equipe", err);
+      aviso('Não foi possível carregar a equipe agora. Tente de novo em instantes.');
     });
 })();

@@ -1,5 +1,5 @@
 /* =========================================================
-   FINO TRATO BARBEARIA — painel admin: núcleo
+   NAVALHA NOBRE BARBEARIA — painel admin: núcleo
    Login, perfil, navegação entre seções e utilidades comuns.
    Cada seção (agenda.js, servicos.js…) se registra com Admin.modulo().
    ========================================================= */
@@ -68,7 +68,7 @@
 
   // Mensagem de erro amigável. P0001 = mensagem escrita por nós no banco.
   Admin.mensagemErro = function (err, padrao) {
-    console.error("Fino Trato admin:", err);
+    console.error("Navalha Nobre admin:", err);
     if (err && err.code === "P0001") return err.message;
     if (err && err.code === "23505") return "Já existe um registro com esses dados.";
     if (err && err.code === "42501") return "Você não tem permissão para isso.";
@@ -199,7 +199,7 @@
       if (mod.iniciar) mod.iniciar(secao);
     }
     if (mod.mostrar) mod.mostrar(secao);
-    document.title = mod.titulo + " | Painel Fino Trato";
+    document.title = mod.titulo + " | Painel Navalha Nobre";
     if (avisos.naoLidos) atualizarTitulo();
   }
 
@@ -250,7 +250,7 @@
           atualizarTitulo();
         }
         if ("Notification" in window && Notification.permission === "granted" && document.hidden) {
-          try { new Notification("Fino Trato · novo agendamento", { body: texto, icon: "../logo.jpg", tag: "novo-agendamento" }); } catch (e) { /* ignora */ }
+          try { new Notification("Navalha Nobre · novo agendamento", { body: texto, icon: "../logo.jpg", tag: "novo-agendamento" }); } catch (e) { /* ignora */ }
         }
         document.dispatchEvent(new CustomEvent("styllo:novo-agendamento", { detail: novos }));
       })

@@ -5,7 +5,7 @@ Leva uns 15 minutos. Tudo pelo navegador.
 ## 1. Criar o projeto
 1. Crie uma conta em https://supabase.com (pode entrar com o GitHub ou o Google).
 2. Clique em **New project**.
-   - **Name:** fino-trato-barbearia
+   - **Name:** navalha-nobre-barbearia
    - **Database Password:** crie uma senha forte e guarde num lugar seguro.
    - **Region:** South America (São Paulo)
 3. Espere o projeto terminar de ser criado (1 a 2 minutos).
@@ -19,7 +19,7 @@ Leva uns 15 minutos. Tudo pelo navegador.
 ## 2.1 Atualizações do banco
 Rode também, **em ordem**, os arquivos da pasta `supabase/migracoes/` (SQL Editor > New query > colar > Run):
 - `002_fotos_barbeiros.sql`: cria o espaço para as fotos dos barbeiros.
-- `003_servicos_fino_trato.sql`: troca o catálogo pelos 19 serviços da Fino Trato.
+- `003_servicos_fino_trato.sql`: troca o catálogo pelos 19 serviços da Navalha Nobre.
 
 Esses arquivos podem ser rodados mais de uma vez sem problema.
 

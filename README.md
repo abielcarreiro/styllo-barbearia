@@ -1,6 +1,6 @@
-# Fino Trato Barbearia
+# Navalha Nobre Barbearia
 
-Site da Fino Trato Barbearia (Patos - PB) com agendamento online e painel administrativo.
+Site da Navalha Nobre Barbearia (Patos - PB) com agendamento online e painel administrativo.
 
 - **Site:** HTML, CSS e JavaScript puros (sem framework)
 - **Banco e login:** [Supabase](https://supabase.com) — esquema em `supabase/schema.sql`

@@ -1,8 +1,8 @@
 -- =========================================================
--- 003 — Catálogo de serviços da Fino Trato
+-- 003 — Catálogo de serviços da Navalha Nobre
 -- Rode no SQL Editor do Supabase (uma vez; rodar de novo não causa problema).
 -- 1. Esconde todos os serviços atuais
--- 2. Cria/atualiza os 19 serviços da Fino Trato (reaproveita os que têm o mesmo código)
+-- 2. Cria/atualiza os 19 serviços da Navalha Nobre (reaproveita os que têm o mesmo código)
 -- 3. Apaga os serviços antigos que nunca foram agendados
 --    (os que já têm agendamento ficam guardados, escondidos, para o histórico)
 -- =========================================================

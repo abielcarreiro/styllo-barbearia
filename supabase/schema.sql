@@ -1,5 +1,5 @@
 -- =========================================================
--- FINO TRATO BARBEARIA — esquema do banco (Supabase / PostgreSQL)
+-- NAVALHA NOBRE BARBEARIA — esquema do banco (Supabase / PostgreSQL)
 -- Como usar: Supabase > SQL Editor > New query > cole este arquivo inteiro > Run.
 -- Pode ser executado uma única vez num projeto novo.
 -- Depois, rode os arquivos de supabase/migracoes/ em ordem.

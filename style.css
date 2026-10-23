@@ -1,11 +1,11 @@
 /* =========================================================
-   FINO TRATO BARBEARIA — style.css
+   NAVALHA NOBRE BARBEARIA — style.css
    Mobile-first. Breakpoints: 768px (tablet), 1024px (desktop nav), 1280px (wide)
    ========================================================= */
 
 /* ---------- Tokens ---------- */
 :root {
-  /* Fino Trato: preto do logo, latão envelhecido e marfim */
+  /* Navalha Nobre: preto do logo, latão envelhecido e marfim */
   --bg: #0B0B0B;
   --bg-alt: #151310;
   --surface: #151310;
@@ -1350,7 +1350,7 @@ main { display: block; }
 .team-ig-vazio { display: block; height: 8px; }
 
 
-/* ---------- Títulos Fino Trato (fonte vintage) ---------- */
+/* ---------- Títulos Navalha Nobre (fonte vintage) ---------- */
 .hero-title,
 .page-hero h1,
 .section-title,
