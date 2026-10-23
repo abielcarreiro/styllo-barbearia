@@ -1386,3 +1386,21 @@ main { display: block; }
 @media (max-width: 767px) {
   .service-desc { grid-column: 1 / -1; margin: 2px 0 4px; }
 }
+
+/* Selo de site de demonstração (inserido pelo script.js) */
+.demo-badge {
+  position: fixed;
+  left: max(16px, env(safe-area-inset-left, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 90;
+  max-width: calc(100vw - 120px);
+  padding: 8px 12px;
+  background: rgba(11, 11, 11, .92);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.35;
+}
+.demo-badge strong { color: var(--primary); font-weight: 600; }
+.demo-badge a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
