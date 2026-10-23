@@ -45,16 +45,21 @@
     lista.innerHTML = '<p class="equipe-aviso">' + texto + "</p>";
   }
 
-  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.fetch) {
+  const demo = cfg.demo && cfg.db;
+  if (!demo && (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.fetch)) {
     aviso('Fale com a gente pelo WhatsApp para conhecer a equipe.');
     return;
   }
 
-  const url = cfg.supabaseUrl.replace(/\/$/, "") +
-    "/rest/v1/barbeiros?select=id,nome,especialidade,instagram,foto_url&ativo=eq.true&order=ordem";
+  // Demonstração: lê do banco local; produção: API do Supabase
+  const busca = demo
+    ? cfg.db.from("barbeiros").select("id, nome, especialidade, instagram, foto_url").eq("ativo", true).order("ordem")
+        .then(function (res) { return res.error ? Promise.reject(res.error) : res.data; })
+    : fetch(cfg.supabaseUrl.replace(/\/$/, "") + "/rest/v1/barbeiros?select=id,nome,especialidade,instagram,foto_url&ativo=eq.true&order=ordem",
+        { headers: { apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + cfg.supabaseAnonKey } })
+        .then(function (res) { return res.ok ? res.json() : Promise.reject(res.status); });
 
-  fetch(url, { headers: { apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + cfg.supabaseAnonKey } })
-    .then(function (res) { return res.ok ? res.json() : Promise.reject(res.status); })
+  busca
     .then(function (barbeiros) {
       if (!barbeiros.length) {
         aviso("Em breve apresentaremos nossa equipe aqui.");

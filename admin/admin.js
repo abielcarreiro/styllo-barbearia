@@ -257,6 +257,9 @@
       .catch(function () { /* tenta de novo no próximo ciclo */ });
   }
 
+  // A barra da demonstração chama isto logo depois de simular um agendamento
+  Admin.conferirNovos = function () { if (Admin.perfil && avisos.desde) conferirNovos(); };
+
   function iniciarAvisos() {
     // Parte do agendamento mais recente do banco (não depende do relógio do computador)
     clearInterval(avisos.timer);

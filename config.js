@@ -11,6 +11,10 @@
    NUNCA coloque aqui a chave "service_role".
    ========================================================= */
 window.STYLLO = {
+  // DEMONSTRAÇÃO: true = dados locais no navegador de cada visitante (demo/demo-db.js),
+  // com login de um clique e tutorial. false = usa o Supabase abaixo.
+  demo: true,
+
   supabaseUrl: "https://whnhockwlwzupnnijmye.supabase.co",
   supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndobmhvY2t3bHd6dXBubmlqbXllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3Mjg1OTQsImV4cCI6MjEwNjMwNDU5NH0.pSndzKJSp4n8InI5pBIQPzUQ9mNjhme16Q7Nhar1lE8",
   fuso: "America/Fortaleza",
@@ -23,6 +27,8 @@ window.STYLLO = {
 };
 
 window.STYLLO.db =
-  window.STYLLO.supabaseUrl && window.STYLLO.supabaseAnonKey && window.supabase
-    ? window.supabase.createClient(window.STYLLO.supabaseUrl, window.STYLLO.supabaseAnonKey)
-    : null;
+  window.STYLLO.demo && window.DemoDB
+    ? window.DemoDB.createClient()
+    : window.STYLLO.supabaseUrl && window.STYLLO.supabaseAnonKey && window.supabase
+      ? window.supabase.createClient(window.STYLLO.supabaseUrl, window.STYLLO.supabaseAnonKey)
+      : null;

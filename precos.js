@@ -87,14 +87,18 @@
 
   /* ---------- Atualização a partir do banco ---------- */
   const cfg = root.STYLLO || {};
-  if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !root.fetch) return;
+  const demo = cfg.demo && cfg.db;
+  if (!demo && (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !root.fetch)) return;
 
-  const url =
-    cfg.supabaseUrl.replace(/\/$/, "") +
-    "/rest/v1/servicos?select=slug,nome,categoria,descricao,duracao_min,preco,preco_a_partir&ativo=eq.true&order=ordem";
+  // Demonstração: lê do banco local; produção: API do Supabase
+  const busca = demo
+    ? cfg.db.from("servicos").select("slug, nome, categoria, descricao, duracao_min, preco, preco_a_partir").eq("ativo", true).order("ordem")
+        .then(function (res) { return res.error ? Promise.reject(res.error) : res.data; })
+    : fetch(cfg.supabaseUrl.replace(/\/$/, "") + "/rest/v1/servicos?select=slug,nome,categoria,descricao,duracao_min,preco,preco_a_partir&ativo=eq.true&order=ordem",
+        { headers: { apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + cfg.supabaseAnonKey } })
+        .then(function (res) { return res.ok ? res.json() : Promise.reject(res.status); });
 
-  fetch(url, { headers: { apikey: cfg.supabaseAnonKey, Authorization: "Bearer " + cfg.supabaseAnonKey } })
-    .then(function (res) { return res.ok ? res.json() : Promise.reject(res.status); })
+  busca
     .then(function (servicos) {
       if (!Array.isArray(servicos) || !servicos.length) return;
 
