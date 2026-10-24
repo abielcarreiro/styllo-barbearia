@@ -91,6 +91,7 @@
     background: rgba(255,255,255,.05); color: var(--d-text); font-size: 14px; }
   .demo-acesso button:hover { background: rgba(255,255,255,.1); }
   .demo-acesso small { display: block; margin-top: 2px; font-size: 12px; color: var(--d-muted); }
+  .demo-acesso .demo-aviso { display: block; margin-top: 10px; font-size: 12px; line-height: 1.5; color: var(--d-muted); }
   .demo-acesso code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--d-gold); }
   .demo-barra[hidden], .demo-reabrir[hidden], .demo-toast[hidden] { display: none !important; }
   @media print { .demo-barra, .demo-reabrir, .demo-toast, .demo-fundo { display: none !important; } }
@@ -135,6 +136,7 @@
           return '<li><span class="demo-num">' + (i + 1) + "</span><div><b>" + p[0] + "</b><span>" + p[1] + "</span></div></li>";
         }).join("") + "</ol>" +
         '<div class="demo-dicas">' +
+          "<b>Acesso restrito:</b> o painel é só do dono e dos barbeiros, com login próprio. No sistema real, o cliente vê apenas o site e o agendamento; a barra Demo existe só para você conhecer tudo.<br><br>" +
           "<b>Simular agendamento</b> cria um agendamento de um cliente fictício, como se alguém tivesse marcado pelo site agora. " +
           "O botão ↺ restaura os dados de exemplo. Tudo fica só no seu navegador: ninguém vê o seu teste." +
         "</div>" +
@@ -231,7 +233,8 @@
     caixa.innerHTML = "<p>Acesso de demonstração</p>" + window.DemoDB.contas.map(function (c, i) {
       return '<button type="button" data-conta="' + i + '">Entrar como <b>' + esc(c.rotulo) + "</b>" +
         "<small>" + esc(c.resumo) + "</small><small><code>" + esc(c.email) + " · " + esc(c.senha) + "</code></small></button>";
-    }).join("");
+    }).join("") +
+      '<small class="demo-aviso">No sistema real, o painel é só do dono e dos barbeiros, cada um com seu login. O cliente usa apenas o site e o agendamento.</small>';
     form.appendChild(caixa);
     caixa.addEventListener("click", function (e) {
       const b = e.target.closest("[data-conta]");
