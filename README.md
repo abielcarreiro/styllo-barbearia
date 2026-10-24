@@ -9,8 +9,8 @@ Site da Navalha Nobre Barbearia (Patos - PB) com agendamento online e painel adm
 ## Modo demonstração (ligado)
 
 Para o portfólio, o site roda com **dados locais no navegador de cada visitante** (`demo: true` em `config.js`):
-- `demo/demo-db.js` imita o cliente do Supabase (consultas, junções, login e fotos) e reescreve em JavaScript as funções do `schema.sql`, com dados de exemplo de 3 semanas.
-- `demo/demo-ui.js` mostra a barra **Demo** (Site · Agendar · Painel · Simular agendamento · Restaurar · Ajuda), o **tutorial** da primeira visita e o **login com um clique** no painel.
+- `demo/demo-db.js` imita o cliente do Supabase (consultas, junções, login e fotos) e reescreve em JavaScript as funções do `schema.sql`. Começa só com o cadastro da barbearia (serviços, barbeiros, horários e acessos), sem clientes nem agendamentos, para testar do zero.
+- `demo/demo-ui.js` mostra a barra **Demo** (Site · Agendar · Painel · Simular agendamento · Começar do zero · Ajuda), o **tutorial** da primeira visita e o **login com um clique** no painel.
 
 | Acesso | E-mail | Senha | Vê |
 |---|---|---|---|

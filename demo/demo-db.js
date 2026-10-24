@@ -8,13 +8,13 @@
    As funções do banco (supabase/schema.sql) foram reescritas aqui em
    JavaScript com as mesmas regras.
 
-   Cada visitante tem os próprios dados: ninguém vê o teste de outra pessoa.
+   Cada visitante tem os próprios dados e começa do zero: ninguém vê o teste de outra pessoa.
    Para usar o Supabase de verdade, desligue "demo" em config.js.
    ========================================================= */
 (function () {
   "use strict";
 
-  const CHAVE = "navalha-demo:v1";
+  const CHAVE = "navalha-demo:v2"; // v2: a demonstração passou a começar sem agendamentos
   const CHAVE_SESSAO = "navalha-demo:sessao";
   const OFFSET_H = 3; // America/Fortaleza = UTC-3, sem horário de verão
   const OFFSET = "-03:00";
@@ -54,7 +54,8 @@
   function erro(mensagem) { return { code: "P0001", message: mensagem }; }
 
   /* =========================================================
-     DADOS DE EXEMPLO
+     DADOS INICIAIS: só o cadastro da barbearia (serviços, barbeiros, horários
+     e acessos). Começa sem clientes, agendamentos nem caixa, para testar do zero.
      ========================================================= */
   const SERVICOS = [
     ["corte", "Corte de Cabelo", "Cabelo", 30, 35, true, null],
@@ -78,24 +79,10 @@
     ["corte-barba-selagem-sobrancelha", "Corte + Barba + Selagem + Sobrancelhas", "Combos", 90, 145, true, null]
   ];
 
-  // Serviços mais pedidos aparecem mais vezes no sorteio
-  const PESOS = { corte: 8, "corte-barba": 7, barba: 5, "corte-tesoura": 2, "corte-barba-sobrancelha": 3, sobrancelha: 2, pezinho: 2, hidratacao: 1, "corte-barba-hidratacao": 2, progressiva: 1, luzes: 1, botox: 1 };
-
+  // Nomes usados pelo botão "Simular agendamento"
   const NOMES = ["João Pedro Alves", "Carlos Eduardo Lima", "Mateus Dantas", "Rafael Brito", "Gabriel Formiga", "Felipe Cavalcanti", "Bruno Queiroga", "Diego Araújo", "Thiago Lacerda", "Gustavo Nóbrega", "Lucas Wanderley", "André Medeiros", "Vinícius Batista", "Henrique Sousa", "Paulo Vitor", "Marcos Antônio", "Daniel Pereira", "Leonardo Rocha", "Caio Fernandes", "Igor Santana", "Ruan Diniz", "Samuel Torres", "Eduardo Leite", "Arthur Gomes", "Renan Oliveira", "Pedro Henrique", "Wesley Silva", "Matheus Costa", "Victor Hugo", "Davi Monteiro", "Otávio Ramos", "Emanuel Ferreira"];
 
-  function rng(semente) {
-    let a = semente;
-    return function () {
-      a |= 0; a = (a + 0x6d2b79f5) | 0;
-      let t = Math.imul(a ^ (a >>> 15), 1 | a);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-
   function semear() {
-    const r = rng(20261023);
-    const sortear = function (lista) { return lista[Math.floor(r() * lista.length)]; };
     const agora = Date.now();
     const criado = new Date(agora - 120 * 86400000).toISOString();
 
@@ -139,83 +126,6 @@
       d.perfis.push({ id: id, email: p.email, nome: p.nome, papel: p.papel, barbeiro_id: p.barbeiro_id, criado_em: new Date(agora - (90 - i * 30) * 86400000).toISOString() });
       if (p.senha) d.credenciais.push({ user_id: id, email: p.email, senha: p.senha });
     });
-
-    // Clientes
-    d.clientes = NOMES.map(function (nome, i) {
-      return { id: uuid(), nome: nome, telefone: "8399" + String(1000000 + Math.floor(r() * 8999999)), email: i % 4 === 0 ? nome.split(" ")[0].toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "") + "@email.com" : null, criado_em: new Date(agora - (100 - i * 2) * 86400000).toISOString() };
-    });
-
-    const dia0 = hoje();
-
-    // Folga do Thiago daqui a 3 dias (aparece em Bloqueios)
-    const folga = addDias(dia0, 3);
-    d.bloqueios.push({ id: uuid(), barbeiro_id: d.barbeiros[2].id, inicio: momento(folga, "00:00").toISOString(), fim: momento(addDias(folga, 1), "00:00").toISOString(), motivo: "Folga", criado_em: new Date(agora - 5 * 86400000).toISOString() });
-
-    const pesados = [];
-    d.servicos.forEach(function (s) { for (let k = 0; k < (PESOS[s.slug] || 0); k++) pesados.push(s); });
-    const formas = ["pix", "pix", "pix", "dinheiro", "credito", "debito"];
-
-    // Agenda: 21 dias para trás e 7 para frente
-    for (let n = -21; n <= 7; n++) {
-      const dia = addDias(dia0, n);
-      const hf = d.horarios_funcionamento[diaSemana(dia)];
-      if (!hf.abre) continue;
-      const ocupacao = n < 0 ? 0.62 : n === 0 ? 0.6 : Math.max(0.12, 0.5 - n * 0.06);
-
-      d.barbeiros.forEach(function (b) {
-        let m = minutos(hf.abre);
-        const fecha = minutos(hf.fecha);
-        while (m + 10 <= fecha) {
-          const srv = sortear(pesados);
-          if (m + srv.duracao_min > fecha) break;
-          const ini = momento(dia, hhmm(m));
-          const fim = new Date(ini.getTime() + srv.duracao_min * MIN);
-          const bloqueado = d.bloqueios.some(function (k) {
-            return (!k.barbeiro_id || k.barbeiro_id === b.id) && Date.parse(k.inicio) < fim.getTime() && Date.parse(k.fim) > ini.getTime();
-          });
-          if (!bloqueado && r() < ocupacao) {
-            const cli = sortear(d.clientes);
-            const passado = fim.getTime() < agora;
-            let status = passado ? "concluido" : r() < 0.6 ? "confirmado" : "agendado";
-            if (passado && r() < 0.06) status = r() < 0.5 ? "faltou" : "cancelado";
-            const origem = r() < 0.7 ? "site" : "admin";
-            const ag = {
-              id: uuid(), cliente_id: cli.id, barbeiro_id: b.id, servico_id: srv.id, assinatura_id: null,
-              inicio: ini.toISOString(), fim: fim.toISOString(), status: status, preco: srv.preco,
-              observacoes: r() < 0.08 ? "Quer manter o comprimento em cima." : null, origem: origem, token: uuid(),
-              // Nunca no futuro: o painel avisa de agendamentos criados depois do mais recente
-              criado_em: new Date(Math.min(ini.getTime() - (1 + Math.floor(r() * 5)) * 86400000, agora - (10 + Math.floor(r() * 600)) * MIN)).toISOString()
-            };
-            d.agendamentos.push(ag);
-            if (status === "concluido") {
-              const valor = srv.preco + (srv.preco_a_partir && r() < 0.3 ? 10 : 0);
-              d.lancamentos.push({
-                id: uuid(), tipo: "entrada", categoria: "atendimento", descricao: srv.nome + " — " + cli.nome, valor: valor,
-                forma_pagamento: sortear(formas), data: dia, agendamento_id: ag.id, assinatura_id: null, barbeiro_id: b.id,
-                criado_por: null, criado_em: fim.toISOString()
-              });
-            }
-            m += Math.ceil(srv.duracao_min / 30) * 30;
-          } else {
-            m += 30;
-          }
-        }
-      });
-    }
-
-    // Outras entradas e saídas do mês
-    const lanc = function (n, tipo, categoria, descricao, valor, forma) {
-      const dia = addDias(dia0, n);
-      d.lancamentos.push({ id: uuid(), tipo: tipo, categoria: categoria, descricao: descricao, valor: valor, forma_pagamento: forma, data: dia, agendamento_id: null, assinatura_id: null, barbeiro_id: null, criado_por: null, criado_em: momento(dia, "12:00").toISOString() });
-    };
-    const diaDoMes = Number(dia0.slice(8, 10));
-    lanc(-(diaDoMes - 5 > 0 ? diaDoMes - 5 : 0), "saida", "aluguel", "Aluguel do salão", 1200, "pix");
-    lanc(-Math.min(diaDoMes - 1, 10), "saida", "contas", "Energia e internet", 286.4, "pix");
-    for (let n = -20; n <= 0; n += 7) {
-      if (diaDoMes + n < 1) continue;
-      lanc(n, "saida", "material", "Lâminas, toalhas e produtos", 140 + Math.round(r() * 120), "debito");
-      lanc(n + 1 > 0 ? 0 : n + 1, "entrada", "produto", "Pomada modeladora", 45, "pix");
-    }
 
     return d;
   }

@@ -116,7 +116,7 @@
   /* ---------- Tutorial ---------- */
   const PASSOS = [
     ["Agende como cliente", "Clique em Agendar, escolha o serviço, o barbeiro e um horário livre. No fim você recebe o link para consultar ou cancelar."],
-    ["Abra o painel", "Clique em Painel e entre como Dono com um clique. O agendamento que você fez já aparece na agenda do dia."],
+    ["Abra o painel", "Clique em Painel e entre como Dono com um clique. O agendamento que você fez aparece na agenda do dia marcado."],
     ["Atenda pela agenda", "Confirme o horário (gera a mensagem pronta para o WhatsApp), conclua o atendimento e informe o pagamento: ele cai no Caixa sozinho."],
     ["Explore o resto", "Veja o histórico de Clientes, o Caixa com comissões, edite Serviços e preços (o site muda na hora), crie Bloqueios e veja a Equipe. Entre como Barbeiro para ver o acesso restrito."]
   ];
@@ -138,7 +138,7 @@
         '<div class="demo-dicas">' +
           "<b>Acesso restrito:</b> o painel é só do dono e dos barbeiros, com login próprio. No sistema real, o cliente vê apenas o site e o agendamento; a barra Demo existe só para você conhecer tudo.<br><br>" +
           "<b>Simular agendamento</b> cria um agendamento de um cliente fictício, como se alguém tivesse marcado pelo site agora. " +
-          "O botão ↺ restaura os dados de exemplo. Tudo fica só no seu navegador: ninguém vê o seu teste." +
+          "A demonstração começa vazia, e o botão ↺ apaga tudo para começar do zero. Tudo fica só no seu navegador: ninguém vê o seu teste." +
         "</div>" +
         "<footer>" +
           '<button class="demo-btn demo-btn--linha" type="button" data-fechar>Fechar</button>' +
@@ -180,7 +180,7 @@
         link("painel", raiz + "admin/", "Painel") +
         '<span class="demo-sep" aria-hidden="true"></span>' +
         '<button type="button" class="demo-acao" data-simular title="Cria um agendamento de um cliente fictício">' + icone("simular") + '<span class="demo-rotulo-longo">Simular agendamento</span></button>' +
-        '<button type="button" class="demo-icone" data-restaurar title="Restaurar dados de exemplo" aria-label="Restaurar dados de exemplo">' + icone("restaurar") + "</button>" +
+        '<button type="button" class="demo-icone" data-restaurar title="Apagar tudo e começar do zero" aria-label="Apagar tudo e começar do zero">' + icone("restaurar") + "</button>" +
         '<button type="button" class="demo-icone" data-ajuda title="Como usar a demonstração" aria-label="Como usar a demonstração">' + icone("ajuda") + "</button>" +
         '<button type="button" class="demo-icone" data-esconder aria-label="Esconder barra da demonstração">' + icone("fechar") + "</button>" +
       "</nav>";
@@ -218,7 +218,7 @@
     });
 
     barra.querySelector("[data-restaurar]").addEventListener("click", function () {
-      if (!confirm("Apagar o que você fez e restaurar os dados de exemplo?")) return;
+      if (!confirm("Apagar todos os agendamentos, clientes e lançamentos e começar do zero?")) return;
       window.DemoDB.restaurar();
       location.reload();
     });
